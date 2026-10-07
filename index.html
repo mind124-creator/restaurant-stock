@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý kho nhà hàng</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+        <h2>📦 KHO NHÀ HÀNG</h2>
+
+        <button class="menu active" onclick="showPage('dashboard')">
+            🏠 Tổng quan
+        </button>
+
+        <button class="menu" onclick="showPage('products')">
+            📦 Hàng hóa
+        </button>
+
+        <button class="menu" onclick="showPage('import')">
+            📥 Nhập kho
+        </button>
+
+        <button class="menu" onclick="showPage('export')">
+            📤 Xuất cho bếp
+        </button>
+
+        <button class="menu" onclick="showPage('inventory')">
+            📋 Kiểm kê
+        </button>
+
+        <button class="menu" onclick="showPage('history')">
+            📜 Lịch sử
+        </button>
+    </aside>
+
+    <main class="main">
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page">
+
+            <h1>Tổng quan kho</h1>
+
+            <div class="cards">
+
+                <div class="card">
+                    <span>Tổng mặt hàng</span>
+                    <strong id="totalProducts">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>Nhập hôm nay</span>
+                    <strong id="todayImport">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>Xuất hôm nay</span>
+                    <strong id="todayExport">0</strong>
+                </div>
+
+                <div class="card warning">
+                    <span>Hàng sắp hết</span>
+                    <strong id="lowStock">0</strong>
+                </div>
+
+            </div>
+
+            <div class="panel">
+                <h2>Tồn kho hiện tại</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Hàng hóa</th>
+                            <th>Đơn vị</th>
+                            <th>Tồn kho</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="dashboardStock"></tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- PRODUCTS -->
+        <section id="products" class="page hidden">
+
+            <h1>Danh mục hàng hóa</h1>
+
+            <div class="panel">
+
+                <div class="form-grid">
+
+                    <input id="productCode" placeholder="Mã hàng">
+
+                    <input id="productName" placeholder="Tên hàng hóa">
+
+                    <select id="productCategory">
+                        <option value="Thực phẩm">Thực phẩm</option>
+                        <option value="Gia vị">Gia vị</option>
+                        <option value="Đồ uống">Đồ uống</option>
+                        <option value="Vật tư">Vật tư</option>
+                    </select>
+
+                    <input id="productUnit" placeholder="Đơn vị: kg, lít, thùng...">
+
+                    <input id="minimumStock" type="number" placeholder="Tồn tối thiểu">
+
+                    <button onclick="addProduct()">+ Thêm hàng</button>
+
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tên hàng</th>
+                            <th>Nhóm</th>
+                            <th>ĐVT</th>
+                            <th>Tồn</th>
+                            <th>Tồn tối thiểu</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="productTable"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- IMPORT -->
+        <section id="import" class="page hidden">
+
+            <h1>📥 Nhập kho</h1>
+
+            <div class="panel">
+
+                <div class="form-grid">
+
+                    <input id="supplier" placeholder="Nhà cung cấp">
+
+                    <select id="importProduct"></select>
+
+                    <input id="importQuantity"
+                           type="number"
+                           min="0"
+                           placeholder="Số lượng">
+
+                    <input id="importExpiry"
+                           type="date">
+
+                    <button onclick="importStock()">
+                        Xác nhận nhập
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- EXPORT -->
+        <section id="export" class="page hidden">
+
+            <h1>📤 Xuất cho bếp</h1>
+
+            <div class="panel">
+
+                <div class="form-grid">
+
+                    <select id="exportProduct"></select>
+
+                    <input id="exportQuantity"
+                           type="number"
+                           min="0"
+                           placeholder="Số lượng">
+
+                    <input id="receiver"
+                           placeholder="Người nhận">
+
+                    <button onclick="exportStock()">
+                        Xác nhận xuất
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- INVENTORY -->
+        <section id="inventory" class="page hidden">
+
+            <h1>📋 Kiểm kê kho</h1>
+
+            <div class="panel">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Hàng hóa</th>
+                            <th>Tồn hệ thống</th>
+                            <th>Thực tế</th>
+                            <th>Chênh lệch</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="inventoryTable"></tbody>
+
+                </table>
+
+                <button class="primary"
+                        onclick="saveInventory()">
+                    Xác nhận kiểm kê
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- HISTORY -->
+        <section id="history" class="page hidden">
+
+            <h1>📜 Lịch sử nhập / xuất</h1>
+
+            <div class="panel">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>Loại</th>
+                            <th>Hàng hóa</th>
+                            <th>Số lượng</th>
+                            <th>Chi tiết</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="historyTable"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
